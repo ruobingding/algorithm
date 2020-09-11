@@ -5,9 +5,9 @@ import java.util.Iterator;
 /**
  * @author robin
  */
-public class SimpleArrayList<T> implements Iterable<T> {
-    private T[] arr;
-    private int len      = 0;
+public class SimpleArrayList<T> implements SimpleList<T> ,Iterable<T> {
+    private T[] array;
+    private int length   = 0;
     private int capacity = 0;
 
 
@@ -20,61 +20,66 @@ public class SimpleArrayList<T> implements Iterable<T> {
             throw new IllegalArgumentException("Illegal Capacity: " + capacity);
         }
         this.capacity = capacity;
-        arr = (T[]) new Object[capacity];
+        array = (T[]) new Object[capacity];
     }
 
-    public void set(int index, T elem){
-        if (index >= len || index < 0){
+    @Override
+    public void set(int index, T element){
+        if (index >= length || index < 0){
             throw new IndexOutOfBoundsException();
         }
-        arr[index] = elem;
+        array[index] = element;
     }
 
+    @Override
     public T get(int index){
-        if (index >= len || index < 0){
+        if (index >= length || index < 0){
             throw new IndexOutOfBoundsException();
         }
-        return arr[index];
+        return array[index];
     }
 
-    public void add(T elem) {
-        if (len + 1 >= capacity) {
+    @Override
+    public void add(T element) {
+        if (length + 1 >= capacity) {
             if (capacity == 0) {
                 capacity = 1;
             }
             else {
                 capacity *= 2;
             }
-            T[] new_arr = (T[]) new Object[capacity];
-            for (int i = 0; i < len; i++){
-                new_arr[i] = arr[i];
+            T[] newArray = (T[]) new Object[capacity];
+            for (int i = 0; i < length; i++){
+                newArray[i] = array[i];
             }
-            arr = new_arr;
+            array = newArray;
         }
-        arr[len++] = elem;
+        array[length++] = element;
     }
 
-    public T removeAt(int rm_index) {
-        if (rm_index >= len || rm_index < 0) {
+    @Override
+    public T removeAt(int removeIndex) {
+        if (removeIndex >= length || removeIndex < 0) {
             throw new IndexOutOfBoundsException();
         }
-        T data = arr[rm_index];
-        T[] new_arr = (T[]) new Object[len - 1];
-        for (int i = 0, j = 0; i < len; i++, j++){
-            if (i == rm_index){
+        T data = array[removeIndex];
+        T[] newArray = (T[]) new Object[length - 1];
+        for (int i = 0, j = 0; i < length; i++, j++){
+            if (i == removeIndex){
                 j--;
             } else {
-                new_arr[j] = arr[i];
+                newArray[j] = array[i];
             }
         }
 
-        arr = new_arr;
-        capacity = --len;
+        array = newArray;
+        capacity = --length;
         return data;
     }
 
-    public boolean remove(Object obj) {
-        int index = indexOf(obj);
+    @Override
+    public boolean remove(Object object) {
+        int index = indexOf(object);
         if (index == -1) {
             return false;
         }
@@ -82,14 +87,15 @@ public class SimpleArrayList<T> implements Iterable<T> {
         return true;
     }
 
-    public int indexOf(Object obj) {
-        for (int i = 0; i < len; i++) {
-            if (obj == null) {
-                if (arr[i] == null) {
+    @Override
+    public int indexOf(Object object) {
+        for (int i = 0; i < length; i++) {
+            if (object == null) {
+                if (array[i] == null) {
                     return i;
                 }
             } else {
-                if (obj.equals(arr[i])) {
+                if (object.equals(array[i])) {
                     return i;
                 }
             }
@@ -97,20 +103,24 @@ public class SimpleArrayList<T> implements Iterable<T> {
         return -1;
     }
 
-    public boolean contains(Object obj) {
-        return indexOf(obj) != -1;
+    @Override
+    public boolean contains(Object object) {
+        return indexOf(object) != -1;
     }
 
+    @Override
     public void clear() {
-        for (int i = 0; i < len; i++){
-            arr[i] = null;
+        for (int i = 0; i < length; i++){
+            array[i] = null;
         }
-        len = 0;
+        length = 0;
     }
+    @Override
     public int size(){
-        return len;
+        return length;
     }
 
+    @Override
     public boolean isEmpty(){
         return size() == 0;
     }
@@ -122,12 +132,12 @@ public class SimpleArrayList<T> implements Iterable<T> {
 
             @Override
             public boolean hasNext() {
-                return index < len;
+                return index < length;
             }
 
             @Override
             public T next() {
-                return arr[index++];
+                return array[index++];
             }
 
             @Override
@@ -139,14 +149,14 @@ public class SimpleArrayList<T> implements Iterable<T> {
 
     @Override
     public String toString() {
-        if (len == 0) {
+        if (length == 0) {
             return "[]";
         } else {
-            StringBuilder sb = new StringBuilder(len).append("[");
-            for (int i = 0; i < len - 1; i++) {
-                sb.append(arr[i] + ", ");
+            StringBuilder sb = new StringBuilder(length).append("[");
+            for (int i = 0; i < length - 1; i++) {
+                sb.append(array[i] + ", ");
             }
-            return sb.append(arr[len - 1] + "]").toString();
+            return sb.append(array[length - 1] + "]").toString();
         }
     }
 
