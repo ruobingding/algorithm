@@ -1,11 +1,8 @@
 package com.robin.algorithm.datastructures.graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class DepthFirstSearchAdjacencyListRecursive {
+public class DepthFirstSearchAdjacencyListIterative {
     static class Edge {
         int from, to, cost;
 
@@ -14,32 +11,32 @@ public class DepthFirstSearchAdjacencyListRecursive {
             this.to = to;
             this.cost = cost;
         }
-
-        @Override
-        public String toString() {
-            return "Edge{" +
-                    "from=" + from +
-                    ", to=" + to +
-                    ", cost=" + cost +
-                    '}';
-        }
     }
 
-    static long dfs(int at, boolean[] visited, Map<Integer, List<Edge>> graph) {
 
-        if (visited[at]) {
-            return 0L;
-        }
+    static int dfs(Map<Integer, List<Edge>> graph, int start, int n) {
 
-        visited[at] = true;
-        System.out.println(at);
-        long count = 1;
+        int count = 0;
+        boolean[] visited = new boolean[n];
+        Stack<Integer> stack = new Stack<>();
 
-        List<Edge> edges = graph.get(at);
-        if (edges != null) {
-            System.out.println(edges.get(0).toString());
-            for (Edge edge : edges) {
-                count += dfs(edge.to, visited, graph);
+        // Start by visiting the starting node
+        stack.push(start);
+        visited[start] = true;
+
+        while (!stack.isEmpty()) {
+            int node = stack.pop();
+            System.out.println(node);
+            count++;
+            List<Edge> edges = graph.get(node);
+
+            if (edges != null) {
+                for (Edge edge : edges) {
+                    if (!visited[edge.to]) {
+                        stack.push(edge.to);
+                        visited[edge.to] = true;
+                    }
+                }
             }
         }
 
@@ -67,21 +64,20 @@ public class DepthFirstSearchAdjacencyListRecursive {
         addDirectedEdge(graph, 1, 2, -2);
         addDirectedEdge(graph, 1, 3, 6);
         addDirectedEdge(graph, 2, 3, 1);
-        addDirectedEdge(graph, 2, 2, 10);
+        addDirectedEdge(graph, 2, 2, 10); // Self loop
 
-        long nodeCount = dfs(0, new boolean[numNodes], graph);
+        long nodeCount = dfs(graph, 0, numNodes);
         System.out.println("DFS node count starting at node 0: " + nodeCount);
         if (nodeCount != 4) {
             System.err.println("Error with DFS");
         }
 
-        nodeCount = dfs(4, new boolean[numNodes], graph);
+        nodeCount = dfs(graph, 4, numNodes);
         System.out.println("DFS node count starting at node 4: " + nodeCount);
         if (nodeCount != 1) {
             System.err.println("Error with DFS");
         }
     }
-
 
     private static void addDirectedEdge(Map<Integer, List<Edge>> graph, int from, int to, int cost) {
         List<Edge> list = graph.get(from);
@@ -92,3 +88,4 @@ public class DepthFirstSearchAdjacencyListRecursive {
         list.add(new Edge(from, to, cost));
     }
 }
+
